@@ -1,0 +1,52 @@
+/* Wrapper agar card lebih lebar */
+.login-boxx {
+  width: 350px;
+  
+  margin: 40px auto;
+}
+.login-box {
+  width: 100%;
+  max-width: 950px; /* lebar total */
+  margin: 40px auto;
+}
+
+/* Panel kiri */
+.register-left {
+  background-color: #005c9a;
+  flex: 1;
+  color: white;
+  text-align: center;
+  min-height: 460px;
+}
+
+.logo-desa {
+  width: 100px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+/* Panel kanan */
+.register-right {
+  flex: 1.2;
+  background: #fff;
+}
+
+/* Bayangan lembut */
+.card {
+  border: none;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+  .login-box {
+    max-width: 400px;
+  }
+  .card-body.d-flex {
+    flex-direction: column;
+  }
+  .register-left,
+  .register-right {
+    width: 100%;
+  }
+}
