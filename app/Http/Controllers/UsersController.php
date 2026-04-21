@@ -103,6 +103,7 @@ class UsersController extends Controller
             'email'    => 'required|unique:users,email,'.$id,
             'role'     => 'required',
             'status'   => 'required',
+            'sns_confirmed' => 'required',
             'password' => 'nullable|confirmed|min:8',
             
         ],[
@@ -121,6 +122,7 @@ class UsersController extends Controller
         $user->email    = $request->email;
         $user->role     = $request->role;
         $user->status     = $request->status;
+        $user->sns_confirmed = $request->sns_confirmed;
         if($request->filled('password')){
             $user->password = Hash::make($request->password);
 

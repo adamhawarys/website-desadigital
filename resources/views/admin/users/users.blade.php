@@ -44,6 +44,7 @@
                   <th>Email</th>
                   <th>Role</th>
                   <th>Status</th>
+                  <th>Konfirmasi SNS</th>
                   <th class="text-center"><i class="fas fa-cog"></i></th>
                 </tr>
               </thead>
@@ -89,6 +90,14 @@
                           <span class="badge badge-danger">
                             {{ $item->status }}
                           </span>
+                        @endif
+                    </td>
+
+                    <td>
+                        @if ($item->sns_confirmed == 1)
+                            <span class="badge badge-success">Confirmed</span>
+                        @else
+                            <span class="badge badge-secondary">Pending</span>
                         @endif
                     </td>
                       

@@ -105,6 +105,19 @@
               @enderror
             </div> 
           </div>
+
+          <div class="row mb-2">
+            <div class="col-xl-12">
+              <label class="form-label">
+                <span class="text-danger">*</span> SNS Confirmed :
+              </label>
+              <select name="sns_confirmed" class="form-control">
+                <option value="1" {{ $users->sns_confirmed == 1 ? 'selected' : '' }}>Confirmed</option>
+                <option value="0" {{ $users->sns_confirmed == 0 ? 'selected' : '' }}>Pending</option>
+              </select>
+            </div>
+          </div>
+
           <div class="row mb-2">
             <div class="col-xl-6 mb-2">
               <label class="form-label">
