@@ -185,11 +185,32 @@ class PortalController extends Controller
 
     public function organisasi()
     {
-    $organisasi = PerangkatDesa::all();
-    $pegawai = $organisasi->first(); // 
-    
+        $organisasi = PerangkatDesa::orderByRaw("
+            FIELD(jabatan,
+                'KEPALA DESA',
+                'SEKRETARIS DESA',
+                'BADAN PERMUSYAWARATAN DESA',
+                'KASI PEMERINTAHAN',
+                'KASI PERENCANAAN',
+                'KAUR KESEJAHTERAAN RAKYAT',
+                'KASI PELAYANAN',
+                'KAUR TATA USAHA DAN UMUM',
+                'KAUR KEUANGAN',
+                'KADUS BENGKEL TIMUR INDUK',
+                'KADUS BENGKEL TIMUR MEKAR',
+                'KADUS BENGKEL UTARA TIMUR',
+                'KADUS BENGKEL UTARA TENGAH',
+                'KADUS BENGKEL UTARA BARAT',
+                'KADUS BENGKEL BARAT',
+                'KADUS BENGKEL SELATAN INDUK',
+                'KADUS BENGKEL SELATAN MEKAR',
+                'KADUS DATAR'
+            )
+        ")->get();
 
-    return view('portal.organisasi', compact('organisasi', 'pegawai'));
+        $pegawai = $organisasi->first();
+
+        return view('portal.organisasi', compact('organisasi', 'pegawai'));
     }
 
     public function organisasiDetail($id)

@@ -99,7 +99,7 @@
     </div>
   </div>
 
-  <div class="col-lg-4 col-md-6">
+  {{-- <div class="col-lg-4 col-md-6">
     <div class="card text-center shadow-sm h-100">
       <div class="card-body">
         <i class="bi bi-megaphone fs-1 text-danger"></i>
@@ -115,7 +115,7 @@
         </button>
       </div>
     </div>
-  </div>
+  </div> --}}
 
 </div>
 
@@ -400,6 +400,14 @@
 <div class="card shadow-sm mt-4">
   <div class="card-header d-flex align-items-center justify-content-between">
     <strong>Riwayat Pengaduan</strong>
+
+    <button type="button"
+        class="btn btn-sm btn-primary"
+        data-bs-toggle="modal"
+        data-bs-target="#modalPengaduan">
+    <i class="bi bi-megaphone me-1"></i> Buat Pengaduan
+</button>
+
   </div>
 
   <div class="card-body p-0">
