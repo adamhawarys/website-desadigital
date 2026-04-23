@@ -37,7 +37,7 @@ $shdkOptions           = ['Kepala Keluarga','Istri','Anak','Menantu','Cucu','Ora
 
             <form action="{{ route('penduduk.update', $penduduk->id) }}" method="POST">
                 @csrf
-                @method('PUT')
+                
                 <div class="card-body">
                     <div class="row">
 

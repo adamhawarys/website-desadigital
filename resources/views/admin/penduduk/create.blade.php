@@ -114,7 +114,7 @@ $shdkOptions           = ['Kepala Keluarga','Istri','Anak','Menantu','Cucu','Ora
                             <div class="form-group">
                                 <label>Kewarganegaraan</label>
                                 <input type="text" name="kewarganegaraan" maxlength="30"
-                                    class="form-control" value="{{ old('kewarganegaraan', 'Indonesia') }}">
+                                    class="form-control" value="{{ old('kewarganegaraan', 'WNI') }}">
                             </div>
 
                             <div class="form-group">
