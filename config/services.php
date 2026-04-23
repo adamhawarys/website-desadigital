@@ -41,4 +41,14 @@ return [
         'redirect'      => env('GOOGLE_REDIRECT'),
     ],
 
+    'aws' => [
+    'key'           => env('AWS_ACCESS_KEY_ID'),
+    'secret'        => env('AWS_SECRET_ACCESS_KEY'),
+    'region'        => env('AWS_DEFAULT_REGION', 'ap-southeast-1'),
+    'bucket'        => env('AWS_BUCKET'),
+    'sqs_url'       => env('AWS_SQS_URL'),
+    'sns_topic_arn' => env('AWS_SNS_TOPIC_ARN'),
+    'sns_topic_arn_admin' => env('AWS_SNS_TOPIC_ARN_ADMIN'),
+    ],
+
 ];

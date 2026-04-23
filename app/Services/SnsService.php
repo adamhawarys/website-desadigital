@@ -14,16 +14,15 @@ class SnsService
     public function __construct()
     {
         $this->client = new SnsClient([
-            'region'  => env('AWS_DEFAULT_REGION', 'ap-southeast-1'),
-            'version' => 'latest',
+            'region'      => config('services.aws.region'),
+            'version'     => 'latest',
             'credentials' => [
-                'key'    => env('AWS_ACCESS_KEY_ID'),
-                'secret' => env('AWS_SECRET_ACCESS_KEY'),
+                'key'    => config('services.aws.key'),
+                'secret' => config('services.aws.secret'),
             ],
         ]);
-
-        $this->topicArn      = env('AWS_SNS_TOPIC_ARN');
-        $this->topicArnAdmin = env('AWS_SNS_TOPIC_ARN_ADMIN');
+        $this->topicArn      = config('services.aws.sns_topic_arn');
+        $this->topicArnAdmin = config('services.aws.sns_topic_arn_admin');
     }
 
     // BROADCAST KE SEMUA WARGA (pengumuman/agenda desa)

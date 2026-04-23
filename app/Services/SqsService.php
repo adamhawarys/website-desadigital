@@ -13,16 +13,16 @@ class SqsService
     public function __construct()
     {
         $this->client = new SqsClient([
-            'region'      => env('AWS_DEFAULT_REGION', 'ap-southeast-1'),
+            'region'      => config('services.aws.region', 'ap-southeast-1'),
             'version'     => 'latest',
             'credentials' => [
-                'key'    => env('AWS_ACCESS_KEY_ID'),
-                'secret' => env('AWS_SECRET_ACCESS_KEY'),
+                'key'    => config('services.aws.key'),
+                'secret' => config('services.aws.secret'),
             ],
         ]);
 
-        $this->queueUrl = env('AWS_SQS_URL');
-    }
+        $this->queueUrl = config('services.aws.sqs_url');
+            }
 
     /**
      * Kirim pesan notifikasi ke SQS
