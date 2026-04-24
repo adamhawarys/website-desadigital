@@ -135,12 +135,16 @@ class UsersController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
-    {
+public function destroy($id)
+{
+    try {
         $user = User::findOrFail($id);
-        $user -> delete();
+        $user->delete();
 
-         return redirect()->route('users.users')->with('success','Data Berhasil Ditambahkan ');
-
+        return redirect()->route('users.users')->with('success', 'Data Berhasil Dihapus!');
+    } catch (\Exception $e) {
+        
+        return redirect()->back()->with('error', 'Gagal menghapus: ' . $e->getMessage());
     }
+}
 }
