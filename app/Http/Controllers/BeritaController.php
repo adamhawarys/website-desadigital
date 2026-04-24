@@ -83,7 +83,7 @@ if ($request->hasFile('gambar')) {
         'public'
     );
 } else {
-    $gambar = null;
+     $gambar = 'images.png';
 }
 
 
@@ -136,59 +136,64 @@ if ($request->hasFile('gambar')) {
      * Update the specified resource in storage.
      */
     public function update(Request $request, string $id)
-{
-    $berita = Berita::findOrFail($id);
+    {
+        $berita = Berita::findOrFail($id);
 
-    $request->validate([
-        'judul'   => 'required|max:255',
-        'slug'    => 'required|unique:berita,slug,' . $berita->id,
-        'konten'  => 'required',
-        'status'  => 'required',
-        'gambar'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ], [
-        'judul.required'  => 'Judul Tidak Boleh Kosong',
-        'slug.required'   => 'Slug Tidak Boleh Kosong',
-        'slug.unique'     => 'Slug Sudah Digunakan',
-        'konten.required' => 'Konten Tidak Boleh Kosong',
-        'status.required' => 'Status Harus Dipilih',
-        'gambar.image'    => 'File Harus Berupa Gambar',
-        'gambar.mimes'    => 'Format Gambar JPG, JPEG, PNG',
-    ]);
+        $request->validate([
+            'judul'   => 'required|max:255',
+            'slug'    => 'required|unique:berita,slug,' . $berita->id,
+            'konten'  => 'required',
+            'status'  => 'required',
+            'gambar'  => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ], [
+            'judul.required'  => 'Judul Tidak Boleh Kosong',
+            'slug.required'   => 'Slug Tidak Boleh Kosong',
+            'slug.unique'     => 'Slug Sudah Digunakan',
+            'konten.required' => 'Konten Tidak Boleh Kosong',
+            'status.required' => 'Status Harus Dipilih',
+            'gambar.image'    => 'File Harus Berupa Gambar',
+            'gambar.mimes'    => 'Format Gambar JPG, JPEG, PNG',
+        ]);
 
-    if ($request->hasFile('gambar')) {
+        if ($request->hasFile('gambar')) {
 
-    // Hapus gambar lama (jika ada)
-    if ($berita->gambar && Storage::disk('s3')->exists($berita->gambar)) {
-        Storage::disk('s3')->delete($berita->gambar);
+            // Hapus gambar lama (jika ada dan bukan gambar default)
+            if ($berita->gambar && $berita->gambar !== 'images.png' && Storage::disk('s3')->exists($berita->gambar)) {
+                Storage::disk('s3')->delete($berita->gambar);
+            }
+
+            $file = $request->file('gambar');
+
+            // buat nama file unik
+            $namaFile = Str::slug($request->judul) . '-' . time() . '.' . $file->getClientOriginalExtension();
+
+            // simpan ke folder berita_photos di S3 dan set public
+            $gambar = Storage::disk('s3')->putFileAs(
+                'berita_photos',
+                $file,
+                $namaFile,
+                'public'
+            );
+
+            $berita->gambar = $gambar;
+
+        } else {
+            // Kalau tidak upload gambar baru dan gambar lama kosong, pakai default
+            if (!$berita->gambar) {
+                $berita->gambar = 'images.png';
+            }
+        }
+
+        // Update data lain
+        $berita->judul  = $request->judul;
+        $berita->slug   = $request->slug ?: Str::slug($request->judul);
+        $berita->konten = $request->konten;
+        $berita->status = $request->status;
+
+        $berita->save();
+
+        return redirect()->route('berita.index')->with('success', 'Berita Berhasil Diperbarui');
     }
-
-    $file = $request->file('gambar');
-
-    // buat nama file unik
-    $namaFile = Str::slug($request->judul) . '-' . time() . '.' . $file->getClientOriginalExtension();
-
-    // simpan ke folder berita_photos di S3 dan set public
-    $gambar = Storage::disk('s3')->putFileAs(
-        'berita_photos',
-        $file,
-        $namaFile,
-        'public'
-    );
-
-    $berita->gambar = $gambar;
-}
-
-
-    // Update data lain
-    $berita->judul  = $request->judul;
-    $berita->slug   = $request->slug ?: Str::slug($request->judul);
-    $berita->konten = $request->konten;
-    $berita->status = $request->status;
-
-    $berita->save();
-
-    return redirect()->route('berita.index')->with('success', 'Berita Berhasil Diperbarui');
-}
 
 
     /**

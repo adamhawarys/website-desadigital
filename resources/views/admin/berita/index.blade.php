@@ -80,14 +80,10 @@
                       </td>
 
                       <td class="text-center align-middle">
-                          @if ($item->gambar)
-                              <img src="{{ Storage::disk('s3')->url($item->gambar) }}"
-                                  class="img-fluid"
-                                  style="width:100px;"
-                                  alt="{{ $item->judul }}">
-                          @else
-                              <span class="text-danger">No Image</span>
-                          @endif
+                          <img src="{{ Storage::disk('s3')->url($item->gambar ?? 'images.png') }}"
+                              class="img-fluid"
+                              style="width:100px;"
+                              alt="{{ $item->judul }}">
                       </td>
 
                       <td>{{ $item->judul }}</td>
@@ -97,15 +93,15 @@
                       <td>{!! $item->excerpt !!}</td>
 
                       <td>
-                      @if ($item->penulis->name == 'Admin')
+                      @if ($item->penulis->role == 'Admin')
                       <span class="badge badge-danger">
-                      {{ $item->penulis->name }}
+                      {{ $item->penulis->role }}
                       </span>
                       @endif
 
-                      @if ($item->penulis->name == 'Petugas')
+                      @if ($item->penulis->role == 'Petugas')
                       <span class="badge badge-info">
-                      {{ $item->penulis->name }}
+                      {{ $item->penulis->role }}
                       </span>
                       @endif
                       </td>

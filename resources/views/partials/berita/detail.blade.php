@@ -35,7 +35,7 @@
                     <div class="col-lg-12">
                         <div class="berita-detail">
                             <div class="berita-img">
-                                <img src="{{ Storage::disk('s3')->url($berita->gambar) }}" class="img-fluid w-100" alt="{{ $berita->judul }}">
+                                <img src="{{ Storage::disk('s3')->url($berita->gambar ?? 'images.png') }}" class="img-fluid w-100" alt="{{ $berita->judul }}">
                             </div>
                             <h2 class="title">{{ $berita->judul }}</h2>
                             <div class="meta-top">

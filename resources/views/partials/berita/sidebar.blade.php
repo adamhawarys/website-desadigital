@@ -34,7 +34,7 @@
     <div class="mt-3">
       @forelse($beritaTerbaru as $item)
         <div class="post-item clearfix">
-          <img src="{{ Storage::disk('s3')->url($item->gambar) }}" alt="{{ $item->judul }}">
+          <img src="{{ Storage::disk('s3')->url($item->gambar ?? 'images.png') }}" alt="{{ $item->judul }}">
 
           <div>
             <h4 class="mb-0">

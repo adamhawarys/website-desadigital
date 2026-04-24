@@ -6,10 +6,11 @@
         <div class="col-12 col-md-6 col-lg-4">
           <article class="h-100">
             <div class="berita-img">
-              <img src="{{ Storage::disk('s3')->url($item->gambar) }}"
-                   class="img-fluid w-100"
-                   alt="{{ $item->judul }}">
-            </div>
+              <div class="berita-img">
+                  <img src="{{ Storage::disk('s3')->url($item->gambar ?? 'images.png') }}"
+                      class="img-fluid w-100"
+                      alt="{{ $item->judul }}">
+              </div>
 
             <p class="berita-date py-2 mb-1">
               <i class="fas fa-clock"></i>

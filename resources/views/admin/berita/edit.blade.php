@@ -40,7 +40,8 @@
                                 
                                 @if($berita->gambar)
                                 <div class="mb-2">
-                                    <img src="{{ Storage::disk('s3')->url($berita->gambar) }}" alt="Preview" class="img-thumbnail" style="max-height: 150px; object-fit: cover;">
+                                    <img src="{{ Storage::disk('s3')->url($berita->gambar ?? 'images.png') }}" 
+                                        alt="Preview" class="img-thumbnail" style="max-height: 150px; object-fit: cover;">
                                 </div>
                                 @endif
                                 <input type="file" name="gambar" class="form-control" @error('gambar') is-invalid

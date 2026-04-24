@@ -16,7 +16,7 @@
                 Gambar
             </div>
             <div class="col-6">
-                : <img src="{{ Storage::disk('s3')->url($item->gambar) }}" class="img-thumbnail" alt="{{ $item->judul }}">
+                : <img src="{{ Storage::disk('s3')->url($item->gambar ?? 'images.png') }}" class="img-thumbnail" alt="{{ $item->judul }}">
             </div>
         </div>
 
