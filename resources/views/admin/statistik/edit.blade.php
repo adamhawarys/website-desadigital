@@ -16,7 +16,7 @@
 
                     <form action="{{ route('statistik.update', $statistik->id) }}" method="POST">
                         @csrf
-                        @method('PUT')
+                        
 
                         {{-- Nama Dusun --}}
                         <div class="form-group">

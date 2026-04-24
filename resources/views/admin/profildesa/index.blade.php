@@ -26,7 +26,7 @@
               <div class="card-header">
                 <div class="row mb-2">
               
-                  <div class="col-sm-6">
+                  {{-- <div class="col-sm-6">
                     <div class="mb-1 mr-2">
                         <a href="{{ route('profil_desa.create') }}" class="btn btn-sm btn-primary">
                           <i class="fas fa-plus mr-2"></i>
@@ -34,7 +34,7 @@
                         </a>
                     </div>
 
-                  </div>
+                  </div> --}}
                   <div class="col-sm-6">
                     <div class="card-tools float-right">
                     <div class="input-group input-group-sm" style="width: 300px;">

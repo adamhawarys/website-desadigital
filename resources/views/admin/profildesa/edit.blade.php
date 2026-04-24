@@ -128,7 +128,7 @@
               @if ($profil->logo)
                 <div class="mt-2">
                   <small class="text-muted d-block mb-1">Logo saat ini:</small>
-                  <img src="{{ asset('storage/logo/'.$profil->logo) }}"
+                  <img src="{{ Storage::disk('s3')->url($profil->logo) }}"
                        class="img-thumbnail"
                        width="120">
                 </div>

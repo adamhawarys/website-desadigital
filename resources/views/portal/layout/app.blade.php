@@ -66,12 +66,12 @@
               <p class="mt-3"><strong>Phone:</strong> <span>0818366698, 087701047211</span></p>
               <p><strong>Email:</strong> <span>desadigital192@gmail.com</span></p>
             </div>
-            <div class="social-links d-flex mt-4">
+            {{-- <div class="social-links d-flex mt-4">
               <a href=""><i class="bi bi-twitter-x"></i></a>
               <a href=""><i class="bi bi-facebook"></i></a>
               <a href=""><i class="bi bi-instagram"></i></a>
               <a href=""><i class="bi bi-linkedin"></i></a>
-            </div>
+            </div> --}}
           </div>
 
           {{-- Kolom 2: Tautan Cepat --}}
