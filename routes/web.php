@@ -172,7 +172,7 @@ Route::group(['middleware' => ['auth', 'check_role:Admin,Petugas', 'prevent-back
         Route::get('/create', [BeritaController::class, 'create'])->name('berita.create');
         Route::post('/', [BeritaController::class, 'store'])->name('berita.store');
         Route::get('/{id}/edit', [BeritaController::class, 'edit'])->name('berita.edit');
-        Route::put('/{id}', [BeritaController::class, 'update'])->name('berita.update');
+        Route::post('/{id}', [BeritaController::class, 'update'])->name('berita.update');
         Route::delete('/{id}', [BeritaController::class, 'destroy'])->name('berita.destroy');
     });
 
