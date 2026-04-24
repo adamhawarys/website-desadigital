@@ -91,7 +91,7 @@
             <h4>Layanan</h4>
             <ul>
               <li><a href="{{ route('layanan') }}">Daftar Layanan</a></li>
-              <li><a href="{{ route('layanan_mandiri') }}">Layanan Mandiri</a></li>
+              <li><a href="{{ route('login_user') }}">Layanan Mandiri</a></li>
               <li><a href="#pengaduan" data-bs-toggle="modal" data-bs-target="#modalPengaduan">Pengaduan</a></li>
             </ul>
           </div>
