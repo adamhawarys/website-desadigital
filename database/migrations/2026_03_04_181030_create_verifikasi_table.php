@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('verifikasi', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->string('unique_id');
             $table->string('otp');
             $table->enum('type', ['register', 'reset_password']);
