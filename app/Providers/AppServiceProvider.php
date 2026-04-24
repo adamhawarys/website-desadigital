@@ -26,19 +26,21 @@ class AppServiceProvider extends ServiceProvider
     {
         Carbon::setLocale('id');
 
-        //Hitung visitor dan bagikan ke SEMUA halaman
-        $visitorHariIni = Visitor::whereDate('tanggal', today())->count();
-        $visitorTotal   = Visitor::distinct('ip_address')->count();
-
-        View::share('visitorHariIni', $visitorHariIni);
-        View::share('visitorTotal', $visitorTotal);
+        try {
+            $visitorHariIni = Visitor::whereDate('tanggal', today())->count();
+            $visitorTotal   = Visitor::distinct('ip_address')->count();
+            View::share('visitorHariIni', $visitorHariIni);
+            View::share('visitorTotal', $visitorTotal);
+        } catch (\Exception $e) {
+            View::share('visitorHariIni', 0);
+            View::share('visitorTotal', 0);
+        }
 
         View::composer('partials.berita.sidebar', function ($view) {
-        $beritaTerbaru = Berita::orderBy('created_at', 'desc')
-                                ->take(3)
-                                ->get();
-
-        $view->with('beritaTerbaru', $beritaTerbaru);
-    });
+            $beritaTerbaru = Berita::orderBy('created_at', 'desc')
+                                    ->take(3)
+                                    ->get();
+            $view->with('beritaTerbaru', $beritaTerbaru);
+        });
     }
 }
