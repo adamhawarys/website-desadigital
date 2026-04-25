@@ -93,4 +93,24 @@ class SnsService
             return null;
         }
     }
+
+    public function cekKonfirmasi(string $email): bool
+{
+    try {
+        $result = $this->client->listSubscriptionsByTopic([
+            'TopicArn' => $this->topicArn,
+        ]);
+
+        foreach ($result->get('Subscriptions') as $sub) {
+            if ($sub['Endpoint'] === $email && $sub['SubscriptionArn'] !== 'PendingConfirmation') {
+                return true;
+            }
+        }
+
+        return false;
+    } catch (\Exception $e) {
+        Log::error('[SNS] Gagal cek konfirmasi: ' . $e->getMessage());
+        return false;
+    }
+}
 }

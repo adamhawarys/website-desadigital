@@ -22,6 +22,16 @@ class LayananMandiriController extends Controller
 {
     public function index()
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user->sns_confirmed) {
+            $sns = new \App\Services\SnsService();
+            if ($sns->cekKonfirmasi($user->email)) {
+                $user->update(['sns_confirmed' => true]);
+            }
+        }
+
         $penduduk = Penduduk::where('user_id', Auth::id())->first();
 
         $riwayatPengajuan = Pengajuan::with([
