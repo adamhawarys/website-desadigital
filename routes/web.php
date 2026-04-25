@@ -182,6 +182,8 @@ Route::group(['middleware' => ['auth', 'check_role:Admin,Petugas', 'prevent-back
         Route::get('/', [AgendaController::class, 'index'])->name('agenda.index');
         Route::get('/create', [AgendaController::class, 'create'])->name('agenda.create');
         Route::post('/', [AgendaController::class, 'store'])->name('agenda.store');
+        Route::get('/{id}/edit', [AgendaController::class, 'edit'])->name('agenda.edit');
+        Route::post('/{id}/update', [AgendaController::class, 'update'])->name('agenda.update'); 
         Route::delete('/{id}', [AgendaController::class, 'destroy'])->name('agenda.destroy');
     });
 

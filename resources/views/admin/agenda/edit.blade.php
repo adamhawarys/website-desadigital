@@ -28,7 +28,8 @@
         
         <form action="{{ route('agenda.update', $agenda->id) }}" method="POST">
           @csrf
-          @method('PUT') <div class="card-body">
+          
+          <div class="card-body">
             <div class="form-group">
               <label>Judul</label>
               <input type="text" name="judul" class="form-control" required value="{{ old('judul', $agenda->judul) }}">
