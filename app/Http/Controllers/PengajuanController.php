@@ -193,14 +193,20 @@ class PengajuanController extends Controller
     }
 
     // REJECT PENGAJUAN
-    public function reject($id)
+    public function reject(Request $request, $id)
     {
+        $request->validate([
+            'keterangan' => 'required|string',
+        ]);
+
         $pengajuan = Pengajuan::with(['layanan', 'user.penduduk', 'penduduk'])
                         ->findOrFail($id);
 
-        $pengajuan->update(['status' => 'Ditolak']);
+        $pengajuan->update([
+            'status'     => 'Ditolak',
+            'keterangan' => $request->keterangan,
+        ]);
 
-        // Notif ke warga dihapus — warga memantau status via dashboard
         return back()->with('success', 'Pengajuan berhasil ditolak');
     }
 

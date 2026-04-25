@@ -274,6 +274,17 @@
                           {{ $p->keperluan ?? '-' }}
                         </div>
                       </div>
+                      @if($p->status === 'Ditolak' && $p->keterangan)
+                          <div class="col-12">
+                              <div class="alert alert-danger d-flex gap-2 align-items-start mb-0">
+                                  <i class="bi bi-x-circle-fill mt-1 flex-shrink-0"></i>
+                                  <div>
+                                      <strong>Alasan Penolakan:</strong>
+                                      <div class="mt-1">{{ $p->keterangan }}</div>
+                                  </div>
+                              </div>
+                          </div>
+                      @endif
                     </div>
 
                     <hr>
