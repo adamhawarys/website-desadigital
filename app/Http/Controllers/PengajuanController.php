@@ -152,6 +152,7 @@ class PengajuanController extends Controller
     {
         $pengajuan = Pengajuan::with([
             'user.penduduk',
+            'penduduk', 
             'layanan.persyaratan',
             'berkas.persyaratan',
             'detail.detailLayanan',

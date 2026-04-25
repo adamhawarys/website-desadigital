@@ -42,20 +42,31 @@
 
             <div class="card-body">
 
-                {{-- STATUS --}}
-                <div class="mb-4 text-center">
-                    @php $st = $pengajuan->status ?? '-'; @endphp
+            {{-- STATUS --}}
+            <div class="mb-4 text-center">
+                @php $st = $pengajuan->status ?? '-'; @endphp
 
-                    @if($st == 'Menunggu Diproses')
-                        <span class="badge badge-warning p-2" style="font-size: 14px;">Menunggu Diproses</span>
-                    @elseif($st == 'Disetujui')
-                        <span class="badge badge-success p-2" style="font-size: 14px;">Disetujui</span>
-                    @elseif($st == 'Ditolak')
-                        <span class="badge badge-danger p-2" style="font-size: 14px;">Ditolak</span>
-                    @else
-                        <span class="badge badge-secondary p-2" style="font-size: 14px;">{{ $st }}</span>
-                    @endif
+                @if($st == 'Menunggu Diproses')
+                    <span class="badge badge-warning p-2" style="font-size: 14px;">Menunggu Diproses</span>
+                @elseif($st == 'Disetujui')
+                    <span class="badge badge-success p-2" style="font-size: 14px;">Disetujui</span>
+                @elseif($st == 'Ditolak')
+                    <span class="badge badge-danger p-2" style="font-size: 14px;">Ditolak</span>
+                @else
+                    <span class="badge badge-secondary p-2" style="font-size: 14px;">{{ $st }}</span>
+                @endif
+            </div>
+
+            {{-- ALASAN PENOLAKAN --}}
+            @if($st === 'Ditolak' && $pengajuan->keterangan)
+                <div class="alert alert-danger d-flex gap-2 align-items-start mx-3 mb-3">
+                    <i class="fas fa-times-circle mt-1 flex-shrink-0"></i>
+                    <div>
+                        <strong>Alasan Penolakan:</strong>
+                        <div class="mt-1">{{ $pengajuan->keterangan }}</div>
+                    </div>
                 </div>
+            @endif
 
                 <div class="row">
 
@@ -64,14 +75,18 @@
                         <div class="border p-3 mb-3 h-100 rounded">
                             <h5 class="mb-3 border-bottom pb-2"><strong>Data Pemohon</strong></h5>
 
+                            @php
+                                $penduduk = $pengajuan->penduduk ?? $pengajuan->user?->penduduk;
+                            @endphp
+
                             <p class="mb-2">
                                 <span class="text-muted">Nama Akun :</span><br>
-                                <strong>{{ $pengajuan->user->name ?? '-' }}</strong>
+                                <strong>{{ $pengajuan->user->name ?? '(Dibuat oleh Admin)' }}</strong>
                             </p>
 
                             <p class="mb-2">
                                 <span class="text-muted">Nama (Biodata) :</span><br>
-                                <strong>{{ $pengajuan->user->penduduk->nama_lengkap ?? '-' }}</strong>
+                                <strong>{{ $penduduk->nama_lengkap ?? '-' }}</strong>
                             </p>
 
                             <p class="mb-2">
@@ -81,7 +96,7 @@
 
                             <p class="mb-0">
                                 <span class="text-muted">NIK :</span><br>
-                                <strong>{{ $pengajuan->user->penduduk->nik ?? '-' }}</strong>
+                                <strong>{{ $penduduk->nik ?? '-' }}</strong>
                             </p>
                         </div>
                     </div>

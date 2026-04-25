@@ -223,7 +223,7 @@ Route::group(['middleware' => ['auth', 'check_role:Admin,Petugas', 'prevent-back
         Route::post('/', [LayananSuratController::class, 'store'])->name('layanan.store');
         Route::get('/{layanan}/edit', [LayananSuratController::class, 'edit'])->name('layanan.edit');
         Route::post('/{layanan}', [LayananSuratController::class, 'update'])->name('layanan.update');
-        Route::delete('/{id}', [LayananSuratController::class, 'destroy'])->name('layanan.destroy');
+        Route::delete('/{layanan}', [LayananSuratController::class, 'destroy'])->name('layanan.destroy');
         Route::get('/{layanan}/preview', [LayananSuratController::class, 'preview'])->name('layanan.preview');
     });
 
