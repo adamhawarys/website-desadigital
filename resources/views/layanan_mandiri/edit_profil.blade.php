@@ -106,7 +106,7 @@
                   @error('email')
                     <div class="invalid-feedback">{{ $message }}</div>
                   @enderror
-                  <small class="text-muted">Perubahan email dapat mempengaruhi status verifikasi.</small>
+                  
                 </div>
 
                 {{-- NO HP --}}
@@ -138,18 +138,7 @@
           </div>
         </div>
 
-        {{-- INFO BOX --}}
-        <div class="alert alert-info border-0" style="border-radius:14px;background:#eaf5ff;">
-          <div class="d-flex">
-            <i class="bi bi-info-circle me-2"></i>
-            <div>
-              <div class="fw-semibold">Catatan</div>
-              <div class="small">
-                Jika Anda mengubah email, Anda mungkin perlu melakukan verifikasi ulang.
-              </div>
-            </div>
-          </div>
-        </div>
+        
 
       </div>
 

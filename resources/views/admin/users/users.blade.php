@@ -44,7 +44,7 @@
                   <th>Email</th>
                   <th>Role</th>
                   <th>Status</th>
-                  <th>Konfirmasi SNS</th>
+                  {{-- <th>Konfirmasi SNS</th> --}}
                   <th class="text-center"><i class="fas fa-cog"></i></th>
                 </tr>
               </thead>
@@ -93,13 +93,13 @@
                         @endif
                     </td>
 
-                    <td>
+                    {{-- <td>
                         @if ($item->sns_confirmed == 1)
                             <span class="badge badge-success">Confirmed</span>
                         @else
                             <span class="badge badge-secondary">Pending</span>
                         @endif
-                    </td>
+                    </td> --}}
                       
                       <td class="text-center">
                         <a href="{{route('users.edit', $item->id)}}" class="btn btn-sm btn-warning">

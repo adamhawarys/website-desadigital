@@ -106,7 +106,7 @@
             </div> 
           </div>
 
-          <div class="row mb-2">
+          {{-- <div class="row mb-2">
             <div class="col-xl-12">
               <label class="form-label">
                 <span class="text-danger">*</span> SNS Confirmed :
@@ -116,7 +116,7 @@
                 <option value="0" {{ $users->sns_confirmed == 0 ? 'selected' : '' }}>Pending</option>
               </select>
             </div>
-          </div>
+          </div> --}}
 
           <div class="row mb-2">
             <div class="col-xl-6 mb-2">
