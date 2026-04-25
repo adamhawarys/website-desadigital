@@ -14,6 +14,7 @@ class Pengajuan extends Model
         'nomor_surat',
         'keperluan',
         'status',
+        'keterangan',
         'tanggal_pengajuan',
         'tanggal_disetujui',
         'surat_pdf'

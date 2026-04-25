@@ -212,6 +212,7 @@ Route::group(['middleware' => ['auth', 'check_role:Admin,Petugas', 'prevent-back
         Route::post('/', [PengumumanController::class, 'store'])->name('pengumuman.store');
         Route::get('/{id}/edit', [PengumumanController::class, 'edit'])->name('pengumuman.edit');
         Route::post('/{id}', [PengumumanController::class, 'update'])->name('pengumuman.update');
+        Route::delete('/{id}', [PengumumanController::class, 'destroy'])->name('pengumuman.destroy');
     });
 
     // LAYANAN SURAT

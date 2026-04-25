@@ -79,9 +79,7 @@
               <td>{{ $item->judul }}</td>
 
               <td class="text-center">
-                
-                  {{ $item->kategori ?? '-' }}
-                </span>
+                {{ $item->kategori ?? '-' }}
               </td>
 
               <td>{!! Str::limit($item->deskripsi, 100) !!}</td>
@@ -95,7 +93,7 @@
               </td>
 
               <td class="text-center">
-                {{ $item->tanggal_mulai }} - {{ $item->tanggal_selesai }} 
+                {{ $item->tanggal_mulai }} - {{ $item->tanggal_selesai }}
               </td>
 
               <td class="text-center align-middle">
@@ -103,13 +101,14 @@
                   <i class="fas fa-edit"></i>
                 </a>
 
-                <button class="btn btn-sm btn-danger mb-1"
-                        data-toggle="modal"
-                        data-target="#hapusPengumuman{{ $item->id }}">
+                <button
+                  class="btn btn-sm btn-danger mb-1 btn-delete-pengumuman"
+                  data-id="{{ $item->id }}"
+                  data-judul="{{ $item->judul }}"
+                  data-toggle="modal"
+                  data-target="#modalHapusPengumuman">
                   <i class="fas fa-trash"></i>
                 </button>
-
-                {{-- @include('admin.pengumuman.modal') --}}
               </td>
             </tr>
             @empty
@@ -128,4 +127,53 @@
     </div>
   </section>
 </div>
+
+
+<!-- MODAL DELETE -->
+<div class="modal fade" id="modalHapusPengumuman" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" id="formHapusPengumuman">
+      @csrf
+      @method('DELETE')
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Hapus Pengumuman</h5>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <div class="modal-body">
+          <p>Yakin ingin menghapus pengumuman berikut?</p>
+          <strong id="judulPengumuman"></strong>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-danger">Hapus</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+
+<!-- SCRIPT -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const buttons = document.querySelectorAll('.btn-delete-pengumuman');
+    const form    = document.getElementById('formHapusPengumuman');
+    const judul   = document.getElementById('judulPengumuman');
+
+    buttons.forEach(button => {
+        button.addEventListener('click', function () {
+            const id   = this.getAttribute('data-id');
+            const nama = this.getAttribute('data-judul');
+
+            form.action = `/dashboard/pengumuman/${id}`;
+            judul.textContent = nama;
+        });
+    });
+});
+</script>
+
 @endsection
