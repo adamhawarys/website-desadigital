@@ -43,7 +43,7 @@
           </li>
           @endif
           
-          @if (in_array(auth()->user()->role, ['Admin', 'Petugas']))
+          @if (in_array(auth()->user()->role, ['Admin']))
           <li class="nav-item">
             <a href="#" class="nav-link">
               <i class="nav-icon fas fa-landmark"></i>
