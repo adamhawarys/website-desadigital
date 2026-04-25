@@ -119,7 +119,7 @@ class PengaduanController extends Controller
 
     public function updateStatus(Request $request, $id)
     {
-        $request->validate(['status' => 'required|in:Menunggu,Diproses,Selesai']);
+        $request->validate(['status' => 'required|in:menunggu,diproses,selesai']);
 
         $pengaduan = Pengaduan::findOrFail($id);
         $pengaduan->update(['status' => $request->status]);
