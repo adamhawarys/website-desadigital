@@ -73,7 +73,7 @@
             <td class="text-center">
 
               <!-- Edit -->
-              <a href="" class="btn btn-warning btn-sm">
+              <a href="{{ route('agenda.edit', $item->id) }}" class="btn btn-warning btn-sm">
                 <i class="fas fa-edit"></i>
               </a>
 
