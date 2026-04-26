@@ -10,14 +10,24 @@ class CatatVisitor
 {
     public function handle(Request $request, Closure $next)
     {
-        $ip     = $request->ip();
-        $hari   = now()->toDateString();
+        $ip        = $request->ip();
+        $userAgent = strtolower($request->userAgent() ?? '');
 
-        // Catat hanya kalau belum ada hari ini dari IP yang sama
-        Visitor::firstOrCreate([
-            'ip_address' => $ip,
-            'tanggal'    => $hari,
-        ]);
+        // Keyword bot yang umum
+        $botKeywords = [
+            'bot', 'crawl', 'spider', 'slurp', 'baidu', 'bing',
+            'google', 'yandex', 'facebook', 'wget', 'curl',
+            'python', 'java', 'httpclient', 'scrapy', 'axios'
+        ];
+
+        $isBot = collect($botKeywords)->contains(fn($k) => str_contains($userAgent, $k));
+
+        if (!$isBot) {
+            Visitor::firstOrCreate([
+                'ip_address' => $ip,
+                'tanggal'    => now()->toDateString(),
+            ]);
+        }
 
         return $next($request);
     }
