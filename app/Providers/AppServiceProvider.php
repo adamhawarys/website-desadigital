@@ -5,7 +5,6 @@ namespace App\Providers;
 use App\Models\Berita;
 use App\Models\Visitor;
 use Carbon\Carbon;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
 
         try {
             $visitorHariIni = Visitor::whereDate('tanggal', today())->count();
-            $visitorTotal   = Visitor::distinct('ip_address')->count();
+            $visitorTotal   = Visitor::distinct()->count('ip_address');
             View::share('visitorHariIni', $visitorHariIni);
             View::share('visitorTotal', $visitorTotal);
         } catch (\Exception $e) {
