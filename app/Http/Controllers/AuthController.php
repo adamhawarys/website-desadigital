@@ -104,11 +104,13 @@ class AuthController extends Controller
             'status'   => 'Verify',
         ]);
 
+        //  daftarakn email ke sns
+        app(SnsService::class)->daftarkanEmail($user->email);
+
         Auth::login($user);
         $request->session()->regenerate();
         $request->session()->put('login_as', 'warga');
 
-        // Kirim OTP dulu, jangan langsung ke layanan mandiri
         return redirect()->route('verifikasi.index')
             ->with('success', 'Registrasi berhasil! Silakan verifikasi email kamu.');
     }

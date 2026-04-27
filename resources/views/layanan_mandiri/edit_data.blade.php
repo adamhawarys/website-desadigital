@@ -323,7 +323,7 @@ function cariNik() {
       setVal('nama_lengkap',   d.nama_lengkap);
       setVal('kk',             d.kk);
       setVal('tempat_lahir',   d.tempat_lahir);
-      setVal('tanggal_lahir',  d.tanggal_lahir);
+      setVal('tanggal_lahir', d.tanggal_lahir ? d.tanggal_lahir.substring(0, 10) : '');
       setVal('alamat',         d.alamat);
       setVal('rt',             d.rt);
       setVal('dusun',          d.dusun);
