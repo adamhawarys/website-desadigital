@@ -137,5 +137,14 @@
          }
     })
 </script>
+
+<script>
+    // Ketika user di halaman login dan tekan Back, arahkan ke halaman utama
+    history.pushState(null, null, location.href);
+    window.addEventListener('popstate', function() {
+        window.location.href = '{{ route('welcome') }}'; // URL halaman utama 
+    });
+</script>
+
 </body>
 </html>
