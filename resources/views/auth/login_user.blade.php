@@ -142,19 +142,18 @@
 </script>
 
 <script>
-    // replace state biar history lama ga bisa diakses
-window.history.replaceState(null, null, window.location.href);
+// langsung push 2 state sekaligus biar sekali klik back langsung ke welcome
+history.pushState(null, null, '{{ route("welcome") }}');
+history.pushState(null, null, location.href);
 
-// pageshow lebih andal di mobile, nangkap cache juga
-window.addEventListener('pageshow', function(event) {
-    if (event.persisted) {
-        window.location.href = '{{ route('welcome') }}';
-    }
+window.addEventListener('popstate', function() {
+    window.location.replace('{{ route("welcome") }}');
 });
 
-// tetap pasang popstate sebagai backup
-window.addEventListener('popstate', function() {
-    window.location.href = '{{ route('welcome') }}';
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        window.location.replace('{{ route("welcome") }}');
+    }
 });
 </script>
 
