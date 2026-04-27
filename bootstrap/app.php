@@ -33,5 +33,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
-    })->create();
+    $exceptions->render(function (AuthenticationException $e, $request) {
+        return redirect()->route('welcome');
+    });
+})->create();
