@@ -3,6 +3,9 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   <title>Masuk Layanan Mandiri | Website Desa bengkel</title>
 
   <link href="{{asset('adminlte3/dist/img/logo-desa-bengkel.png')}}" rel="icon">
@@ -139,11 +142,20 @@
 </script>
 
 <script>
-    // Ketika user di halaman login dan tekan Back, arahkan ke halaman utama
-    history.pushState(null, null, location.href);
-    window.addEventListener('popstate', function() {
-        window.location.href = '{{ route('welcome') }}'; // URL halaman utama 
-    });
+    // replace state biar history lama ga bisa diakses
+window.history.replaceState(null, null, window.location.href);
+
+// pageshow lebih andal di mobile, nangkap cache juga
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        window.location.href = '{{ route('welcome') }}';
+    }
+});
+
+// tetap pasang popstate sebagai backup
+window.addEventListener('popstate', function() {
+    window.location.href = '{{ route('welcome') }}';
+});
 </script>
 
 </body>
