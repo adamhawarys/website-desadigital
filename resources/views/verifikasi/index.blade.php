@@ -6,13 +6,9 @@
   <title>Verifikasi Akun | Website Desa Bengkel</title>
 
   <link href="{{ asset('adminlte3/dist/img/logo-desa-bengkel.png') }}" rel="icon">
-  <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
   <link rel="stylesheet" href="{{ asset('adminlte3/plugins/fontawesome-free/css/all.min.css') }}">
-  <!-- icheck bootstrap -->
   <link rel="stylesheet" href="{{ asset('adminlte3/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
-  <!-- Theme style -->
   <link rel="stylesheet" href="{{ asset('adminlte3/dist/css/adminlte.min.css') }}">
   <link rel="stylesheet" href="{{ asset('adminlte3/dist/css/custom.css') }}">
 </head>
@@ -21,48 +17,40 @@
   <div class="login-logo">
     <b>Verifikasi Akun Layanan Mandiri</b>
   </div>
-  <!-- /.login-logo -->
 
-<div class="card">
-  <div class="card-body login-card-body ">
-    @if (session('failed'))
-      <div class="alert alert-danger"> {{ session('failed') }}</div>
-    @endif
+  <div class="card">
+    <div class="card-body login-card-body">
 
-    <p class="login-box-msg">Mohon verifikasi akun Anda</p>
+      {{-- Pesan error --}}
+      @if (session('failed'))
+        <div class="alert alert-danger">
+          <i class="fas fa-times-circle mr-1"></i> {{ session('failed') }}
+        </div>
+      @endif
+
+      {{-- Pesan sukses --}}
+      @if (session('success'))
+        <div class="alert alert-success">
+          <i class="fas fa-check-circle mr-1"></i> {{ session('success') }}
+        </div>
+      @endif
+
+      <p class="login-box-msg">Mohon verifikasi akun Anda</p>
+
       <form action="{{ route('verifikasi.index') }}" method="post">
         @csrf
         <input type="hidden" value="register" name="type">
-        <button type="submit" class="btn btn-sm btn-primary"> Kirim OTP via Email</button>
-
+        <button type="submit" class="btn btn-sm btn-primary">
+          <i class="fas fa-envelope mr-1"></i> Kirim OTP via Email
+        </button>
       </form>
-    
-    
+
+    </div>
   </div>
-  <!-- /.login-card-body -->
-</div>
 </div>
 
-<!-- /.login-box -->
-
-<!-- jQuery -->
 <script src="{{ asset('adminlte3/plugins/jquery/jquery.min.js') }}"></script>
-<!-- Bootstrap 4 -->
 <script src="{{ asset('adminlte3/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-<!-- AdminLTE App -->
 <script src="{{ asset('adminlte3/dist/js/adminlte.min.js') }}"></script>
-
-{{-- Skrip untuk icon password --}}
-<script>
-    $('.show-password').on('click', function(){
-        if($('#password').attr('type') == 'password'){
-            $('#password').attr('type', 'text');
-            $('#password-lock').attr('class', 'fas fa-unlock');
-        } else {
-            $('#password').attr('type', 'password');
-            $('#password-lock').attr('class', 'fas fa-lock');
-        }
-    })
-</script>
 </body>
 </html>

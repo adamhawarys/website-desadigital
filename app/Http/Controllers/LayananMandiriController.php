@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OtpEmail;
 use App\Models\Berkas;
 use App\Models\DetailPengajuan;
 use App\Models\Layanan;
@@ -9,6 +10,8 @@ use App\Models\Penduduk;
 use App\Models\Pengaduan;
 use App\Models\Pengajuan;
 use App\Models\ProfilDesa;
+use App\Models\Verifikasi;
+use App\Services\SnsService;
 use App\Services\SqsService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -17,6 +20,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class LayananMandiriController extends Controller
 {
@@ -26,7 +30,7 @@ class LayananMandiriController extends Controller
         $user = Auth::user();
 
         if (!$user->sns_confirmed) {
-            $sns = new \App\Services\SnsService();
+            $sns = new SnsService();
             if ($sns->cekKonfirmasi($user->email)) {
                 $user->update(['sns_confirmed' => true]);
             }
@@ -152,6 +156,56 @@ class LayananMandiriController extends Controller
             'confirm_password.same' => 'Konfirmasi password tidak sama',
         ]);
 
+        $emailBerubah = $request->email !== $user->email;
+        $emailBaru    = $request->email;
+
+        // Jika email berubah → simpan ke pending, kirim OTP verifikasi
+        if ($emailBerubah) {
+            // Simpan email baru sementara di session
+            session(['pending_email' => $emailBaru]);
+
+            // Invalidate OTP lama
+            Verifikasi::where('user_id', $user->id)
+                ->where('type', 'ganti_email')
+                ->where('status', 'active')
+                ->update(['status' => 'invalid']);
+
+            $otp    = rand(100000, 999999);
+            $verify = Verifikasi::create([
+                'user_id'   => $user->id,
+                'unique_id' => uniqid(),
+                'otp'       => md5($otp),
+                'type'      => 'ganti_email',
+                'send_via'  => 'email',
+            ]);
+
+            // Kirim OTP ke email BARU
+            Mail::to($emailBaru)->send(new OtpEmail($otp, 'OTP - Verifikasi Email Baru'));
+
+            // Simpan data profil lain dulu (nama, no_hp, foto, password) — tanpa email
+            $user->name  = $request->name;
+            $user->no_hp = $request->no_hp;
+
+            if ($request->hasFile('foto')) {
+                if ($user->foto && !str_starts_with($user->foto, 'https://lh')) {
+                    Storage::disk('s3')->delete($user->foto);
+                }
+                $file     = $request->file('foto');
+                $namaFile = 'foto-' . $user->id . '-' . time() . '.' . $file->getClientOriginalExtension();
+                $user->foto = Storage::disk('s3')->putFileAs('profil_user', $file, $namaFile, 'public');
+            }
+
+            if ($request->filled('password')) {
+                $user->password = Hash::make($request->password);
+            }
+
+            $user->save();
+
+            return redirect()->route('verifikasi_email.show', $verify->unique_id)
+                ->with('info', 'Kode OTP telah dikirim ke email baru Anda. Silakan verifikasi.');
+        }
+
+        // Jika email TIDAK berubah → update biasa
         $user->name  = $request->name;
         $user->email = $request->email;
         $user->no_hp = $request->no_hp;
@@ -160,7 +214,6 @@ class LayananMandiriController extends Controller
             if ($user->foto && !str_starts_with($user->foto, 'https://lh')) {
                 Storage::disk('s3')->delete($user->foto);
             }
-
             $file     = $request->file('foto');
             $namaFile = 'foto-' . $user->id . '-' . time() . '.' . $file->getClientOriginalExtension();
             $user->foto = Storage::disk('s3')->putFileAs('profil_user', $file, $namaFile, 'public');
@@ -174,6 +227,91 @@ class LayananMandiriController extends Controller
 
         return redirect()->route('profil')->with('success', 'Profil akun berhasil diperbarui');
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | VERIFIKASI EMAIL BARU (setelah ganti email)
+    |--------------------------------------------------------------------------
+    */
+
+    public function showVerifikasiEmail($unique_id)
+    {
+        $verify = Verifikasi::whereUserId(Auth::id())
+            ->whereUniqueId($unique_id)
+            ->whereStatus('active')
+            ->whereType('ganti_email')
+            ->first();
+
+        if (!$verify) {
+            return redirect()->route('layanan_mandiri.edit_profil')
+                ->with('failed', 'OTP kedaluwarsa. Silakan coba ganti email lagi.');
+        }
+
+        return view('layanan_mandiri.verifikasi_email', compact('unique_id'));
+    }
+
+    public function verifikasiEmail(Request $request, $unique_id)
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $verify = Verifikasi::whereUserId($user->id)
+            ->whereUniqueId($unique_id)
+            ->whereStatus('active')
+            ->whereType('ganti_email')
+            ->first();
+
+        if (!$verify) {
+            return redirect()->route('layanan_mandiri.edit_profil')
+                ->with('failed', 'OTP kedaluwarsa. Silakan coba ganti email lagi.');
+        }
+
+        // Cek expired 5 menit
+        if ($verify->created_at->lt(now()->subMinutes(5))) {
+            $verify->update(['status' => 'invalid']);
+            return redirect()->route('layanan_mandiri.edit_profil')
+                ->with('failed', 'OTP kedaluwarsa. Silakan coba ganti email lagi.');
+        }
+
+        // OTP salah
+        if (md5($request->otp) != $verify->otp) {
+            return back()->with('failed', 'Kode OTP tidak valid. Silakan coba lagi.');
+        }
+
+        // OTP benar → update email
+        $emailBaru = session('pending_email');
+
+        if (!$emailBaru) {
+            return redirect()->route('layanan_mandiri.edit_profil')
+                ->with('failed', 'Sesi habis. Silakan coba ganti email lagi.');
+        }
+
+        $emailLama = $user->email;
+
+        $user->email             = $emailBaru;
+        $user->email_verified_at = now();
+        $user->sns_confirmed     = false; // reset SNS → perlu subscribe ulang
+        $user->save();
+
+        $verify->update(['status' => 'valid']);
+        session()->forget('pending_email');
+
+        // Daftarkan email baru ke SNS
+        try {
+            app(SnsService::class)->daftarkanEmail($emailBaru);
+        } catch (\Exception $e) {
+            Log::error('[SNS] Gagal daftarkan email baru: ' . $e->getMessage());
+        }
+
+        return redirect()->route('profil')
+            ->with('success', 'Email berhasil diperbarui. Silakan konfirmasi email baru Anda.');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | LAYANAN, PENGAJUAN, dsb (tidak berubah)
+    |--------------------------------------------------------------------------
+    */
 
     public function daftarLayanan()
     {
@@ -197,7 +335,6 @@ class LayananMandiriController extends Controller
 
         $layanan = Layanan::with(['detailLayanan', 'persyaratan'])->findOrFail($request->layanan_id);
 
-        // Validasi dinamis
         $rules = [];
         foreach ($layanan->detailLayanan as $field) {
             $isWajib = (int) $field->wajib === 1;
@@ -223,7 +360,6 @@ class LayananMandiriController extends Controller
 
         $request->validate($rules);
 
-        // Simpan pengajuan
         $pengajuan = Pengajuan::create([
             'user_id'           => Auth::id(),
             'layanan_id'        => $layanan->id,
@@ -232,7 +368,6 @@ class LayananMandiriController extends Controller
             'status'            => 'Menunggu Diproses',
         ]);
 
-        // Simpan detail pengajuan
         foreach ($request->input('detail', []) as $detailLayananId => $isi) {
             if ($isi === null || $isi === '') continue;
             DetailPengajuan::create([
@@ -242,7 +377,6 @@ class LayananMandiriController extends Controller
             ]);
         }
 
-        // Simpan berkas
         if ($request->hasFile('berkas')) {
             $user        = Auth::user();
             $tahun       = now()->year;
@@ -263,9 +397,6 @@ class LayananMandiriController extends Controller
             }
         }
 
-        
-        // NOTIF KE ADMIN via SQS -> Lambda -> SNS
-        
         try {
             $sqs        = new SqsService();
             $pesanAdmin = "Ada pengajuan surat baru dari warga!\n\n"
@@ -389,13 +520,9 @@ class LayananMandiriController extends Controller
             $namaField = $detail->detailLayanan->keterangan ?? null;
             if (!$namaField) continue;
             $placeholder = '{{' . Str::slug($namaField, '_') . '}}';
-            
             $template    = str_replace($placeholder, $detail->isi ?? '-', $template);
         }
 
-                // ============================
-        // AMBIL LOGO DESA → BASE64
-        // ============================
         $logoBase64 = null;
         if ($profil && $profil->logo) {
             try {
@@ -409,9 +536,6 @@ class LayananMandiriController extends Controller
             }
         }
 
-        // ============================
-        // AMBIL LOGO KABUPATEN → BASE64
-        // ============================
         $logoKabBase64 = null;
         try {
             $pathLogoKab = 'logo-desa/logo-lobar.png';
@@ -424,11 +548,11 @@ class LayananMandiriController extends Controller
         }
 
         return view('surat.template', [
-            'profil'          => $profil,
-            'template'        => $template,
-            'logoBase64'      => $logoBase64,
-            'logoKabBase64'   => $logoKabBase64,
-            'tanggalDisetujui'=> $pengajuan->tanggal_disetujui
+            'profil'           => $profil,
+            'template'         => $template,
+            'logoBase64'       => $logoBase64,
+            'logoKabBase64'    => $logoKabBase64,
+            'tanggalDisetujui' => $pengajuan->tanggal_disetujui
                 ? Carbon::parse($pengajuan->tanggal_disetujui)->translatedFormat('d F Y')
                 : '',
         ]);

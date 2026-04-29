@@ -17,64 +17,89 @@ class VerifikasiController extends Controller
     }
 
     public function show($unique_id){
-        $verify = Verifikasi::whereUserId(Auth::user()->id)->whereUniqueId($unique_id)
-                ->whereStatus('active')->count();
+        $verify = Verifikasi::whereUserId(Auth::user()->id)
+                ->whereUniqueId($unique_id)
+                ->whereStatus('active')
+                ->first();
                 
-                if(!$verify) abort(404);
-                return view('verifikasi.show', compact('unique_id'));
+        if(!$verify) {
+            return redirect()->route('verifikasi.index')
+                ->with('failed', 'OTP kedaluwarsa. Silakan kirim ulang.');
+        }
+
+        return view('verifikasi.show', compact('unique_id'));
     }
 
     public function update(Request $request, $unique_id){
-       $verify = Verifikasi::whereUserId(Auth::user()->id)
+        $verify = Verifikasi::whereUserId(Auth::user()->id)
                 ->whereUniqueId($unique_id)
                 ->whereStatus('active')
                 ->first();
 
-                if(!$verify) abort(404);
-                if(md5($request->otp) != $verify->otp){
-                    $verify->update(['status' => 'invalid']);
-                    return redirect()->route('verifikasi.index');
-                }
+        // OTP tidak ditemukan
+        if(!$verify) {
+            return redirect()->route('verifikasi.index')
+                ->with('failed', 'OTP kedaluwarsa. Silakan kirim ulang.');
+        }
 
-                $verify->update(['status' => 'valid']);
-                User::find($verify->user_id)->update([
-                    'status' => 'Active',
-                    'email_verified_at' => now(),
-                    ]);
-                 return redirect()->route('layanan_mandiri');
+        // OTP expired (5 menit)
+        if($verify->created_at->lt(now()->subMinutes(5))) {
+            $verify->update(['status' => 'invalid']);
+            return redirect()->route('verifikasi.index')
+                ->with('failed', 'OTP kedaluwarsa. Silakan kirim ulang.');
+        }
 
+        // OTP salah - TIDAK langsung invalid, biar bisa coba lagi
+        if(md5($request->otp) != $verify->otp){
+            return back()->with('failed', 'Kode OTP tidak valid. Silakan coba lagi.');
+        }
+
+        // OTP benar
+        $verify->update(['status' => 'valid']);
+        User::find($verify->user_id)->update([
+            'status' => 'Active',
+            'email_verified_at' => now(),
+        ]);
+
+        return redirect()->route('layanan_mandiri')
+            ->with('success', 'Akun berhasil diverifikasi!');
     }
     
     public function store(Request $request){
         if($request->type == 'register'){
             $user = User::find($request->user()->id);
-            
-        }else{
+        } else {
             // $user = Reset pw
         }
 
         if (!$user) 
-            return back()->with('failed','User Tidak Ditemukan');
-        
+            return back()->with('failed', 'User Tidak Ditemukan');
+
+        // Invalidate OTP lama jika ada
+        Verifikasi::where('user_id', $user->id)
+            ->where('type', 'register')
+            ->where('status', 'active')
+            ->update(['status' => 'invalid']);
 
         $otp = rand(100000, 999999);
         
         $verify = Verifikasi::create([
-            'user_id' => $user->id, 
+            'user_id'   => $user->id, 
             'unique_id' => uniqid(), 
-            'otp' => md5($otp),
-            'type' => $request->type, 
-            'send_via' => 'email'        
+            'otp'       => md5($otp),
+            'type'      => $request->type, 
+            'send_via'  => 'email'        
         ]);
-        // Ganti queue() -> send() dulu
+
         Mail::to($user->email)->send(new OtpEmail($otp));
+
         if($request->type == 'register'){
-            return redirect('/verify/'. $verify->unique_id);
+            return redirect('/verify/'. $verify->unique_id)
+                ->with('success', 'Kode OTP telah dikirim ke email kamu.');
         }
-        // return redirect ('/reset-password')
     }
 
-        /*
+    /*
     |--------------------------------------------------------------------------
     | LUPA PASSWORD
     |--------------------------------------------------------------------------
@@ -129,12 +154,15 @@ class VerifikasiController extends Controller
                 ->whereType('reset_password')
                 ->first();
  
-        if (!$verify) abort(404);
+        if (!$verify) {
+            return redirect()->route('lupa_password')
+                ->with('failed', 'OTP kedaluwarsa. Silakan kirim ulang.');
+        }
  
         return view('auth.lupa_password_otp', compact('unique_id'));
     }
  
-    // Step 4: Verifikasi OTP
+    // Step 4: Verifikasi OTP reset password
     public function verifyOtpLupaPassword(Request $request, $unique_id)
     {
         $verify = Verifikasi::whereUniqueId($unique_id)
@@ -142,12 +170,21 @@ class VerifikasiController extends Controller
                 ->whereType('reset_password')
                 ->first();
  
-        if (!$verify) abort(404);
- 
-        if (md5($request->otp) != $verify->otp) {
+        if (!$verify) {
+            return redirect()->route('lupa_password')
+                ->with('failed', 'OTP kedaluwarsa. Silakan kirim ulang.');
+        }
+
+        // OTP expired (5 menit)
+        if($verify->created_at->lt(now()->subMinutes(5))) {
             $verify->update(['status' => 'invalid']);
             return redirect()->route('lupa_password')
-                ->with('failed', 'Kode OTP salah atau sudah tidak valid. Silakan coba lagi.');
+                ->with('failed', 'OTP kedaluwarsa. Silakan kirim ulang.');
+        }
+ 
+        // OTP salah - TIDAK langsung invalid, biar bisa coba lagi
+        if (md5($request->otp) != $verify->otp) {
+            return back()->with('failed', 'Kode OTP tidak valid. Silakan coba lagi.');
         }
  
         $verify->update(['status' => 'valid']);
@@ -197,8 +234,4 @@ class VerifikasiController extends Controller
         return redirect()->route('login_user')
             ->with('success', 'Password berhasil diubah. Silakan login.');
     }
-
- 
 }
-
-
