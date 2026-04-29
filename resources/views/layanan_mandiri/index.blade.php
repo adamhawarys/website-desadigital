@@ -553,18 +553,14 @@
 </script>
 
 <script>
-// langsung push 2 state sekaligus biar sekali klik back langsung ke welcome
-history.pushState(null, null, '{{ route("welcome") }}');
-history.pushState(null, null, location.href);
+// Hanya jalankan jika user baru masuk (bukan refresh)
+if (!sessionStorage.getItem('layanan_mandiri_visited')) {
+    sessionStorage.setItem('layanan_mandiri_visited', '1');
+    history.pushState(null, null, location.href);
+}
 
 window.addEventListener('popstate', function() {
     window.location.replace('{{ route("welcome") }}');
-});
-
-window.addEventListener('pageshow', function(event) {
-    if (event.persisted) {
-        window.location.replace('{{ route("welcome") }}');
-    }
 });
 </script>
 @endsection
