@@ -141,7 +141,10 @@
     })
 </script>
 
-
+<script>
+// Bersihkan sessionStorage saat user berada di halaman login
+sessionStorage.removeItem('layanan_mandiri_visited');
+</script>
 
 </body>
 </html>
