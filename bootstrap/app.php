@@ -33,6 +33,6 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         // kalau session habis / belum login, redirect ke login warga bukan 500
         $exceptions->render(function (AuthenticationException $e, $request) {
-            return redirect()->route('login_user');
+            return redirect()->route('login');
         });
     })->create();

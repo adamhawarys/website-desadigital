@@ -125,7 +125,7 @@ class AuthController extends Controller
         try {
             $googleUser = Socialite::driver('google')->user();
         } catch (\Exception $e) {
-            return redirect()->route('login_user')
+            return redirect()->route('login')
                 ->with('failed', 'Login Google gagal. Silakan coba lagi.');
         }
 
@@ -148,7 +148,7 @@ class AuthController extends Controller
         }
 
         if ($user->status == 'Banned') {
-            return redirect()->route('login_user')
+            return redirect()->route('login')
                 ->with('failed', 'Akun Anda telah dibekukan');
         }
 
@@ -199,7 +199,7 @@ class AuthController extends Controller
         $this->forceLogout($request);
 
         if ($loginAs === 'warga') {
-            return redirect()->route('login_user')
+            return redirect()->route('login')
                 ->with('success', 'Anda Berhasil Logout');
         }
 

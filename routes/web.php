@@ -88,10 +88,10 @@ Route::middleware(['guest', 'prevent-back-history'])->group(function () {
         ->name('login_admin.post');
 
     Route::get('/login-layanan-mandiri', [AuthController::class, 'showLoginUser'])
-        ->name('login_user');
+        ->name('login');
 
     Route::post('/login-layanan-mandiri', [AuthController::class, 'login_user'])
-        ->name('login_user.post');
+        ->name('login.post');
 
     Route::get('/register', fn () => view('auth.register'))
         ->name('register');
@@ -389,7 +389,7 @@ Route::prefix('notifikasi')->middleware(['auth'])->group(function () {
 });
  
 
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 

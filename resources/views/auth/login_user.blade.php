@@ -51,7 +51,7 @@
 
           <p class="login-box-msg">Sign in to start your session</p>
 
-          <form action="{{ route('login_user') }}" method="post">
+          <form action="{{ route('login') }}" method="post">
             @csrf
             @error('email')
               <small class="text-danger">{{ $message }}</small>

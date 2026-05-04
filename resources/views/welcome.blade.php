@@ -78,7 +78,7 @@
           <div class="col-md-6 col-lg-3" data-aos="zoom-out" data-aos-delay="300">
             <div class="icon-box">
               <div class="icon"><i class="bi bi-person-workspace"></i></div>
-              <h4 class="title"><a href="{{ route('login_user') }}">Layanan Mandiri</a></h4>
+              <h4 class="title"><a href="{{ route('login') }}">Layanan Mandiri</a></h4>
               {{-- <p class="description">Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia</p> --}}
             </div>
           </div><!--End Icon Box -->
@@ -519,7 +519,7 @@
             <h4>Layanan</h4>
             <ul>
               <li><a href="{{ route('layanan') }}">Daftar Layanan</a></li>
-              <li><a href="{{ route('login_user') }}">Layanan Mandiri</a></li>
+              <li><a href="{{ route('login') }}">Layanan Mandiri</a></li>
               <li><a href="#pengaduan" data-bs-toggle="modal" data-bs-target="#modalPengaduan">Pengaduan</a></li>
             </ul>
           </div>

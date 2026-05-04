@@ -5,7 +5,7 @@
                     <img src="{{ asset('assets/img/ico-log-in.png') }}" style="max-width: 140px;" class="img-responsive img-need-login mb-3">
                     <h6 class="text-muted">Anda perlu login untuk melakukan pengajuan layanan mandiri.</h6>
                     <div class="mt-3">
-                        <a href="{{ route('login_user') }}" class="btn btn-primary btn-label rounded-pill">
+                        <a href="{{ route('login') }}" class="btn btn-primary btn-label rounded-pill">
                             <i class="ri-login-box-line label-icon align-middle rounded-pill fs-16 me-2">
                                  Login Layanan Mandiri
                             
