@@ -231,7 +231,7 @@ class VerifikasiController extends Controller
  
         $verify->update(['status' => 'invalid']);
  
-        return redirect()->route('login_user')
+        return redirect()->route('login')
             ->with('success', 'Password berhasil diubah. Silakan login.');
     }
 }

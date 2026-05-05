@@ -23,7 +23,7 @@ class CheckStatus
 
        
 
-        return redirect()->route('login_user')
+        return redirect()->route('login')
             ->with('failed', 'Akun kamu tidak aktif. Hubungi admin.');
     }
 }

@@ -76,7 +76,7 @@
           </form>
 
           <p class="mt-3 mb-0 text-center">
-            <a href="{{ route('login_user') }}">Kembali ke Login</a>
+            <a href="{{ route('login') }}">Kembali ke Login</a>
           </p>
 
         </div>
