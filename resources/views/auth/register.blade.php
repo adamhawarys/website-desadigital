@@ -95,7 +95,7 @@
               </div>
             </div>
           </form>
-          <a href="{{ route('login_user') }}">Saya sudah punya akun</a>
+          <a href="{{ route('login') }}">Saya sudah punya akun</a>
           <div class="social-auth-links text-center mb-3 mt-3">
             <p>- Atau -</p>
             
