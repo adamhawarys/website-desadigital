@@ -8,5 +8,6 @@
 </head>
 <body>
     <p style="text-align: center"> Kode OTP Anda adalah {{ $otp }}</p>
+    <p style="text-align: center">Kode ini akan kadaluarsa dalam <strong>5 menit</strong>.</p>
 </body>
 </html>
