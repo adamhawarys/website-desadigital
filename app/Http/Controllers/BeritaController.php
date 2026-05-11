@@ -138,6 +138,11 @@ class BeritaController extends Controller
     {
         $berita = Berita::findOrFail($id);
 
+        // Fallback: kalo slug kosong (misal JS mati), generate dari judul
+        if (empty($request->slug)) {
+            $request->merge(['slug' => Str::slug($request->judul)]);
+        }
+
         $request->validate([
             'judul'   => 'required|max:255',
             'slug'    => 'required|unique:berita,slug,' . $berita->id,
@@ -175,7 +180,7 @@ class BeritaController extends Controller
         }
 
         $berita->judul  = $request->judul;
-        $berita->slug   = $request->slug ?: Str::slug($request->judul);
+        $berita->slug   = $request->slug; // dari form (sudah di-generate JS atau fallback backend)
         $berita->konten = $request->konten;
         $berita->status = $request->status;
         $berita->save();

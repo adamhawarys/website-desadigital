@@ -141,5 +141,15 @@
             height: 200
         });
     });
+
+    // Auto-generate slug dari judul
+    document.getElementById('judul').addEventListener('input', function () {
+        document.getElementById('slug').value = this.value
+            .toLowerCase()
+            .trim()
+            .replace(/[^a-z0-9\s-]/g, '')
+            .replace(/\s+/g, '-')
+            .replace(/-+/g, '-');
+    });
 </script>
 @endsection
