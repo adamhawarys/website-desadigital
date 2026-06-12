@@ -387,6 +387,9 @@ Route::prefix('notifikasi')->middleware(['auth'])->group(function () {
     // Warga daftarkan email untuk terima pengumuman
     Route::post('/subscribe', [NotifikasiController::class, 'subscribeEmail']);
 });
+
+Route::get('/surat/verifikasi/{hash}', [PengajuanController::class, 'verifikasi'])
+    ->name('surat.verifikasi');
  
 
 Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');

@@ -12,6 +12,7 @@ class Pengajuan extends Model
         'penduduk_id',
         'layanan_id',
         'nomor_surat',
+        'verification_hash',
         'keperluan',
         'status',
         'keterangan',

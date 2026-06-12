@@ -189,10 +189,28 @@ class PengajuanController extends Controller
         $suratService = new SuratService();
         $suratService->generateAndSimpan($pengajuan);
 
-        // Notif ke warga dihapus — warga memantau status via dashboard
+        // ── TAMBAHAN: QR Tanda Tangan Digital ──────────────────
+        $verificationHash = hash('sha256',
+            $pengajuan->nomor_surat . $pengajuan->id . now()->timestamp
+        );
+
+        $pengajuan->update(['verification_hash' => $verificationHash]);
+
+        $sqsService = new SqsService();
+        $sqsService->kirimPesan(
+            judul: 'PDF Signing',
+            pesan: json_encode([
+                's3_key'            => $pengajuan->surat_pdf,
+                'nomor_surat'       => $pengajuan->nomor_surat,
+                'verification_hash' => $verificationHash,
+            ]),
+            email: null,
+            tipe:  'sign',
+        );
+        // ────────────────────────────────────────────────────────
+
         return back()->with('success', 'Pengajuan berhasil disetujui');
     }
-
     // REJECT PENGAJUAN
     public function reject(Request $request, $id)
     {
@@ -209,6 +227,18 @@ class PengajuanController extends Controller
         ]);
 
         return back()->with('success', 'Pengajuan berhasil ditolak');
+    }
+
+    public function verifikasi(string $hash)
+    {
+    $pengajuan = Pengajuan::where('verification_hash', $hash)
+                    ->with(['layanan', 'penduduk', 'user.penduduk'])
+                    ->first();
+
+    return view('surat.verifikasi', [
+        'valid'     => !is_null($pengajuan),
+        'pengajuan' => $pengajuan,
+    ]);
     }
 
     public function destroy($id)
