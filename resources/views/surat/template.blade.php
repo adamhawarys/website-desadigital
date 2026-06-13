@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>Surat Keterangan</title>
 <style>
-    /* Reset margin untuk area surat */
     .kertas-surat {
         font-family: 'Times New Roman', Times, serif;
         width: 100%;
@@ -15,7 +14,7 @@
     /* ====== KOP SURAT ====== */
     .kop-surat {
         width: 100%;
-        border-bottom: 3px solid black; /* Garis bawah tebal */
+        border-bottom: 3px solid black;
         margin-bottom: 15px;
         padding-bottom: 10px;
     }
@@ -26,29 +25,25 @@
     .tabel-kop td {
         vertical-align: middle;
     }
-    
-    /* Perubahan pembagian 3 kolom */
     .kolom-logo-kiri {
-        width: 15%; 
+        width: 15%;
         text-align: left;
     }
     .kolom-logo-kanan {
-        width: 15%; 
-        text-align: right; /* Tarik logo ke kanan */
+        width: 15%;
+        text-align: right;
     }
     .kolom-teks {
-        width: 70%; /* Diperkecil agar proporsional */
+        width: 70%;
         text-align: center;
     }
-    
     .kolom-logo-kiri img, .kolom-logo-kanan img {
-        width: 80px; /* Sesuaikan ukuran logo */
+        width: 80px;
         height: auto;
     }
-    
     .pemerintah { font-size: 16px; font-weight: normal; line-height: 1.2; }
     .nama-desa { font-size: 22px; font-weight: bold; line-height: 1.2; margin-top: 5px; }
-    .alamat { font-size: 12px; margin-top: 5px; font-style: italic;}
+    .alamat { font-size: 12px; margin-top: 5px; font-style: italic; }
 
     /* ====== ISI SURAT ====== */
     .isi-surat {
@@ -57,7 +52,6 @@
         line-height: 1.5;
         font-size: 14px;
     }
-    /* Mematikan margin liar dari Summernote/WYSIWYG */
     .isi-surat p {
         margin-top: 0;
         margin-bottom: 10px;
@@ -70,16 +64,15 @@
         margin-top: 40px;
     }
     .ttd-box {
-        float: right; /* Tarik TTD ke pojok kanan */
+        float: right;
         width: 300px;
         text-align: center;
     }
     .nama-kades {
-        margin-top: 60px; /* Ruang untuk tanda tangan basah/stempel */
+        margin-top: 100px; /* ← DIUBAH dari 60px ke 100px */
         font-weight: bold;
         text-decoration: underline;
     }
-    /* Clearfix untuk float */
     .clearfix::after {
         content: "";
         clear: both;
@@ -101,7 +94,6 @@
                         Logo Kabupaten
                     @endif
                 </td>
-                
                 <td class="kolom-teks">
                     <div class="pemerintah">PEMERINTAH KABUPATEN LOMBOK BARAT <br> KECAMATAN LABUAPI</div>
                     <div class="nama-desa">DESA {{ strtoupper($profil->nama_desa ?? 'NAMA DESA') }}</div>
@@ -112,7 +104,6 @@
                         @endif
                     </div>
                 </td>
-                
                 <td class="kolom-logo-kanan">
                     @if(!empty($logoBase64))
                         <img src="{{ $logoBase64 }}" alt="Logo Desa">
