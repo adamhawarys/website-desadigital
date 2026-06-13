@@ -49,6 +49,7 @@ return [
     'sqs_url'       => env('AWS_SQS_URL'),
     'sns_topic_arn' => env('AWS_SNS_TOPIC_ARN'),
     'sns_topic_arn_admin' => env('AWS_SNS_TOPIC_ARN_ADMIN'),
+    'pdf_sign_queue_url' => env('SQS_PDF_SIGN_QUEUE_URL'),
     ],
 
 ];

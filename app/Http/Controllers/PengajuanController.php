@@ -189,6 +189,8 @@ class PengajuanController extends Controller
         $suratService = new SuratService();
         $suratService->generateAndSimpan($pengajuan);
 
+        $pengajuan = $pengajuan->fresh();
+
         // ── TAMBAHAN: QR Tanda Tangan Digital ──────────────────
         $verificationHash = hash('sha256',
             $pengajuan->nomor_surat . $pengajuan->id . now()->timestamp
@@ -197,20 +199,16 @@ class PengajuanController extends Controller
         $pengajuan->update(['verification_hash' => $verificationHash]);
 
         $sqsService = new SqsService();
-        $sqsService->kirimPesan(
-            judul: 'PDF Signing',
-            pesan: json_encode([
-                's3_key'            => $pengajuan->surat_pdf,
-                'nomor_surat'       => $pengajuan->nomor_surat,
-                'verification_hash' => $verificationHash,
-            ]),
-            email: null,
-            tipe:  'sign',
+        $sqsService->kirimSignPdf(
+            s3Key            : $pengajuan->surat_pdf,
+            nomorSurat       : $pengajuan->nomor_surat,
+            verificationHash : $verificationHash,
         );
         // ────────────────────────────────────────────────────────
 
         return back()->with('success', 'Pengajuan berhasil disetujui');
     }
+
     // REJECT PENGAJUAN
     public function reject(Request $request, $id)
     {

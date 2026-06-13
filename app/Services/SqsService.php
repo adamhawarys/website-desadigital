@@ -56,5 +56,27 @@ class SqsService
         }
     }
 
+    public function kirimSignPdf(string $s3Key, string $nomorSurat, string $verificationHash): void
+{
+    try {
+        $result = $this->client->sendMessage([
+            'QueueUrl'    => config('services.aws.pdf_sign_queue_url'),
+            'MessageBody' => json_encode([
+                'tipe'              => 'sign',
+                's3_key'            => $s3Key,
+                'nomor_surat'       => $nomorSurat,
+                'verification_hash' => $verificationHash,
+            ]),
+        ]);
+
+        Log::info('[SQS] Pesan sign berhasil dikirim', [
+            'MessageId' => $result->get('MessageId'),
+            's3_key'    => $s3Key,
+        ]);
+
+    } catch (\Exception $e) {
+        Log::error('[SQS] Gagal kirim pesan sign: ' . $e->getMessage());
+    }
+}
 
 }
