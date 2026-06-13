@@ -69,7 +69,7 @@
         text-align: center;
     }
     .nama-kades {
-        margin-top: 100px; /* ← DIUBAH dari 60px ke 100px */
+        margin-top: 130px; 
         font-weight: bold;
         text-decoration: underline;
     }
