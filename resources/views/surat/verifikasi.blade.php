@@ -30,6 +30,10 @@
                 <td style="padding:8px;">{{ $pengajuan->layanan->nama_layanan ?? '-' }}</td>
             </tr>
             <tr>
+                <td style="color:#666; padding:8px;">Disetujui Oleh</td>
+                <td style="padding:8px;">{{ $profil->kades ?? 'Kepala Desa' }}</td>
+            </tr>
+            <tr>
                 <td style="color:#666; padding:8px;">Tanggal Disetujui</td>
                 <td style="padding:8px;">
                     {{ \Carbon\Carbon::parse($pengajuan->tanggal_disetujui)->translatedFormat('d F Y') }}

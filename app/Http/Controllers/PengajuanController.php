@@ -229,15 +229,18 @@ class PengajuanController extends Controller
 
     public function verifikasi(string $hash)
     {
-    $pengajuan = Pengajuan::where('verification_hash', $hash)
-                    ->with(['layanan', 'penduduk', 'user.penduduk'])
-                    ->first();
+        $pengajuan = Pengajuan::where('verification_hash', $hash)
+                        ->with(['layanan', 'penduduk', 'user.penduduk'])
+                        ->first();
 
-    return view('surat.verifikasi', [
-        'valid'     => !is_null($pengajuan),
-        'pengajuan' => $pengajuan,
-    ]);
-    }
+        $profil = \App\Models\ProfilDesa::first();
+
+        return view('surat.verifikasi', [
+            'valid'     => !is_null($pengajuan),
+            'pengajuan' => $pengajuan,
+            'profil'    => $profil,
+        ]);
+}
 
     public function destroy($id)
     {
