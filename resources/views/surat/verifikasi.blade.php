@@ -31,7 +31,7 @@
             </tr>
             <tr>
                 <td style="color:#666; padding:8px;">Disetujui Oleh</td>
-                <td style="padding:8px;">{{ $profil->kades ?? 'Kepala Desa' }}</td>
+                <td style="padding:8px;">{{ $profil->kades ?? 'Kepala Desa' }} "(KEPALA DESA BENGKEL)"</td>
             </tr>
             <tr>
                 <td style="color:#666; padding:8px;">Tanggal Disetujui</td>
